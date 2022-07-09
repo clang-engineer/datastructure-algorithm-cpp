@@ -53,6 +53,56 @@ struct org_tree {
         std::cout << manager << "'s child add " << subordinate << std::endl;
         return true;
     }
+
+    static void preOrder(node* start) {
+        if (!start)
+            return;
+
+        std::cout << start->position << ", ";
+        preOrder(start->first);
+        preOrder(start->second);
+    }
+
+    static void inOrder(node* start) {
+        if (!start)
+            return;
+
+        inOrder(start->first);
+        std::cout << start->position << ", ";
+        inOrder(start->second);
+    }
+
+    static void postOrder(node* start) {
+        if (!start)
+            return;
+
+        postOrder(start->first);
+        postOrder(start->second);
+        std::cout << start->position << ", ";
+    }
+
+    static void levelOrder(node* start) {
+        if (!start)
+            return;
+
+        std::queue<node*> q;
+        q.push(start);
+
+        while (!q.empty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                auto current = q.front();
+                q.pop();
+
+                std::cout << current->position << ", ";
+                if (current->first)
+                    q.push(current->first);
+                if (current->second)
+                    q.push(current->second);
+            }
+            std::cout << std::endl;
+        }
+    }
 };
 
 int main() {
@@ -65,4 +115,15 @@ int main() {
     tree.addSubordinate("LEV1-1", "LEV1-1-2");
     tree.addSubordinate("LEV1-2", "LEV1-2-1");
     tree.addSubordinate("LEV1-2", "LEV1-2-2");
+
+    std::cout << "preOrder: " << std::endl;
+    org_tree::preOrder(tree.root);
+    std::cout << std::endl;
+    std::cout << "inOrder: " << std::endl;
+    org_tree::inOrder(tree.root);
+    std::cout << std::endl;
+    std::cout << "postOrder: " << std::endl;
+    org_tree::postOrder(tree.root);
+    std::cout << std::endl;
+    org_tree::levelOrder(tree.root);
 }
