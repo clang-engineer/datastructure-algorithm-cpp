@@ -32,6 +32,18 @@ vector<int> BellmanFord(vector<Edge> edges, int V, int start)
 		}
 	}
 
+	for (auto& e : edges)
+	{
+		if (distance[e.src] == UNKNOWN)
+			continue;
+
+		if (distance[e.dst] > distance[e.src] + e.weight)
+		{
+			cout << "Negative Weight circle detectied!" << endl;
+			return {};
+		}
+	}
+
 	return distance;
 };
 
@@ -41,7 +53,14 @@ int main()
 	vector<Edge> edges;
 
 	vector<vector<int>> edge_map {
-		{0, 1, 3}, {1, 2, 5}, {1, 3, 10}, {3, 2, -7}, {2, 4, 2}
+			{0, 1, 3}, 
+			{1, 3, -8},
+			{2, 1 ,3},
+			{2, 5, 5},
+			{3, 2, 3},
+			{2, 4, 2},
+			{4, 5, -1},
+			{5, 1, 8},
 	};
 
 	for (auto& e : edge_map)
