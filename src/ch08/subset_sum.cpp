@@ -3,8 +3,11 @@
 #include <algorithm>
 #include <time.h>
 #include <iomanip>
+#include <climits>
 
 using namespace std;
+
+const int UNKNOWN = INT_MAX;
 
 #define DEBUG 0
 #if DEBUG
@@ -74,6 +77,29 @@ bool SubsetSum_Backtracking(vector<int>& set, int sum, int i)
 
 }
 
+bool SubsetSum_Memoization(vector<int>& set, int sum, int i, vector<vector<int>>& memo)
+{
+	if (sum == 0)
+	{
+		return true;
+	}
+
+	if (i == set.size() || set[i] > sum)
+	{
+		return false;
+	}
+
+	if (memo[i][sum] == UNKNOWN)
+	{
+		bool append  = SubsetSum_Memoization(set, sum - set[i], i + 1, memo);
+		bool ignore  = SubsetSum_Memoization(set, sum, i + 1, memo);
+
+		memo[i][sum] = append || ignore;
+	}
+
+	return memo[i][sum];
+}
+
 vector<string> types = 
 {
 	"BRUTE FORCE",
@@ -97,8 +123,8 @@ int main()
 	vector<int> set = {16, 1058, 22, 13, 46, 55, 3, 92, 47, 7,
 		98, 367, 807, 106, 333, 85, 577, 9, 3059};
 
-	int target = 6076;
-	int tests = 2;
+	int target = 6799;
+	int tests = 3;
 
 	sort(set.begin(), set.end());
 
@@ -115,6 +141,10 @@ int main()
 				break;
 			case 1:
 				found = SubsetSum_Backtracking(set, target, 0);
+				break;
+			case 2:
+				vector<vector<int>> memo(set.size(), vector<int>(7000, UNKNOWN));
+				found = SubsetSum_Memoization(set, target, 0, memo);
 				break;
 		}
 
